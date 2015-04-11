@@ -1,3 +1,7 @@
+html {
+    background: url('../img/swirl_pattern.png');
+}
+
 .small-left-margin{
     margin-left: 15px;
 }
