@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="materialize-css/bin/materialize.css"  media="screen,projection"/>
+      <link type="text/css" rel="stylesheet" href="css/app.css"  media="screen,projection"/>
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="materialize-css/bin/materialize.js"></script>
+    <!-- google maps javascript -->
+    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBcl0Jnr78DekYfQ35obqd-DPw2Apxv00w&sensor=true"></script>
+  </head>
+
+  <body>
+
+  <!-- BODY -->
+
+  <nav>
+      <div class="nav-wrapper">
+          <ul id="nav-mobile" class="left">
+              <li><a href="sass.html"><i class="mdi-image-photo-camera"></i></a></li>
+              <li><a href="components.html"><i class="mdi-editor-insert-chart"></i></a></li>
+          </ul>
+      </div>
+  </nav>
+
+  <!-- map -->
+  <div id="map" data-tap-disabled="true"></div>
+
+  <footer class="fixed-footer">
+      <a class="btn-floating btn-large waves-effect waves-light red right margin small-right-margin" href="#" onclick="takePicture()">
+          <i class="mdi-image-photo-camera"></i>
+      </a>
+      <a class="btn-floating btn-large waves-effect waves-light green right margin small-right-margin" href="#" onclick="getPicture()">
+          <i class="mdi-image-photo-camera"></i>
+      </a>
+  </footer>
+
+  <script type="text/javascript">
+
+//      ionic.DomUtil.ready(function(){
+//
+//          alert('ionic ready');
+//
+//      });
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        alert(navigator.camera);
+    }
+
+    function getPicture(){
+        navigator.camera.getPicture(function(imageURI) {
+
+            alert('esto fue lo que llego ' + imageURI );
+
+            // imageURI is the URL of the image that we can use for
+            // an <img> element or backgroundImage.
+
+        }, function(err) {
+
+            alert('Error: ' + err);
+
+        },{
+            quality: 20,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
+            correctOrientation: true
+        });
+    }
+
+    function takePicture() {
+
+        alert('apunto de tomar una foto');
+
+        navigator.camera.getPicture(function(imageURI) {
+
+            alert('esto fue lo que llego ' + imageURI );
+
+            // imageURI is the URL of the image that we can use for
+            // an <img> element or backgroundImage.
+
+        }, function(err) {
+
+            alert('Error: ' + err);
+
+      }, {
+            quality: 20,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            correctOrientation: true
+        });
+    }
+
+    function getMap(){
+
+        var map = new google.maps.Map(document.getElementById("map"),{});
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var positions = [];
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            positions.push({lat: pos.k,lng: pos.B});
+            console.log(pos);
+            $scope.map.setCenter(pos);
+
+        }, function(error) {
+            alert('Unable to get location: ' + error.message);
+        });
+
+    }
+
+
+
+  </script>
+  <!--Import jQuery before materialize.js-->
+
+  </body>
+</html>

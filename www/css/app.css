@@ -1,0 +1,15 @@
+.small-left-margin{
+    margin-left: 15px;
+}
+
+.small-right-margin{
+    margin-right: 15px;
+}
+
+.fixed-footer {
+    position:fixed;
+    left:0px;
+    bottom:0px;
+    height:70px;
+    width:100%;
+}
