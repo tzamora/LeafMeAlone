@@ -10,10 +10,24 @@ html {
     margin-right: 15px;
 }
 
+.big-icon{
+    font-size: 40px;
+}
+
+.remove-padding{
+    padding:0px !important;
+}
+
 .fixed-footer {
     position:fixed;
     left:0px;
     bottom:0px;
     height:70px;
     width:100%;
+}
+
+.map{
+    width: 95%;
+    height: 400px;
+    margin: 0 auto;
 }
