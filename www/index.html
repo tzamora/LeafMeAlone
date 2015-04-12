@@ -387,7 +387,7 @@
 
                 var new_image = document.getElementById('new_image');
 
-                new_image.src = "data:image/jpeg;base64," + response.result_image;
+                new_image.src = "data:image/jpeg;base64," + response;
 
                 $('#progressBar').hide();
 
@@ -420,11 +420,16 @@
 
 
         if (typeof(Storage) !== "undefined") {
+            var processedImage = document.getElementById('processedImage');
+            var newImage = document.getElementById('new_image');
+
             var data = {
                 "latitude": currentLocation.coords.latitude,
                 "longitude": currentLocation.coords.longitude,
                 "description": document.getElementById('description').value,
-                "injured": document.getElementById('damagePercent').value
+                "injured": document.getElementById('damagePercent').value,
+                "processedImage": processedImage.src,
+                "newImage": newImage.src
             };
 
             db.push(data);
@@ -455,7 +460,7 @@
             imageDiv.className = "card-image waves-effect waves-block waves-light";
             var image = document.createElement("img");
             image.className = "activator";
-            //<image.src("images/office.jpg");
+            image.src(obj.processedImage);
             imageDiv.appendChild(image);
 
             var contentDiv = document.createElement("div");
@@ -470,7 +475,6 @@
 
             document.getElementById("gallery").appendChild(imageDiv);
             document.getElementById("gallery").appendChild(contentDiv);
-
         });
 
     }
