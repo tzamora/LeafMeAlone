@@ -83,7 +83,7 @@
         </div>
 
         <div class="row">
-            <button class="btn waves-effect waves-light con s12" type="submit" name="action">Submit
+            <button class="btn waves-effect waves-light con s12" type="submit" name="action" onclick="saveInformation();">Submit
                 <i class="mdi-content-send right"></i>
             </button>
         </div>
@@ -104,8 +104,8 @@
           <img id="analizedPhoto" src="img/ionic.png" />
       </div>
       <div class="modal-footer">
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+          <a class=" modal-action modal-close waves-effect waves-green btn-flat" href="#" >Submit</a>
+          <!--<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>-->
       </div>
   </div>
 
@@ -133,6 +133,8 @@
         function showMapView(){
             showView('confirmation');
         }
+
+        onDeviceReady();
     });
 
     function getPicture(){
@@ -227,6 +229,20 @@
 
     function onDeviceReady() {
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+
+
+    function saveInformation() {
+      if(typeof(Storage) !== "undefined") {
+
+        data = [ { 
+          latitude: currentLocation.coords.latitude, 
+          longituted: currentLocation.coords.longitude, 
+          description: document.getElementById('description')
+        } ];
+
+        localStorage["leaf"] = data;
+      }
     }
 
   </script>
