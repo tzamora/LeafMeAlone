@@ -47,6 +47,9 @@
       <div class="row">
           <div class="center-align">
               <h5>Load an image</h5>
+              <div id="progressBar" class="progress" style="display: none">
+                  <div class="indeterminate"></div>
+              </div>
               <img id="processedImage" src="img/ionic.png" style="width: 200px; height:200px;" />
               <div class="row">
                   <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
@@ -93,7 +96,7 @@
             </div>
             <div class="input-field col s12">
                 <input id="coord" type="text" class="validate">
-                <label class="active" for="coord">Coordenadas</label>
+                <label id="coordLabel" class="active" for="coord">Coordenadas</label>
             </div>
         </div>
 
@@ -151,8 +154,6 @@
         function showMapView(){
             showView('confirmation');
         }
-        onDeviceReady();
-
     });
 
     function getPicture(){
@@ -160,6 +161,8 @@
         var img = document.getElementById('new_image');
 
         navigator.camera.getPicture(function(imageURI){
+
+            $('#progressBar').show();
 
             var image = document.getElementById('new_image');
 
@@ -196,8 +199,6 @@
             hiddenImage.src = "data:image/jpeg;base64," + imageURI;
 
             postImageData(hiddenImage);
-
-            $('#modal1').openModal();
 
         }, function(err) {
 
@@ -248,6 +249,8 @@
 
             $('#coord').val( currentLocation.coords.latitude + ', ' + currentLocation.coords.longitude);
 
+            $('#coordLabel').attr('class','active');
+
         }
     }
 
@@ -266,37 +269,6 @@
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 
-    function uploadPhoto(imageURI) {
-
-        alert('---> ' + imageURI);
-
-        var options = new FileUploadOptions();
-        options.fileKey="file";
-        options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1)+'.png';
-        options.mimeType="text/plain";
-
-        var params = new Object();
-
-        options.params = params;
-
-        var ft = new FileTransfer();
-
-        ft.upload(imageURI, encodeURI("http://172.26.7.216:8080/"), win, fail, options);
-    }
-
-    function win(r) {
-        alert('lo logramos');
-        console.log("Code = " + r.responseCode);
-        console.log("Response = " + r.response);
-        console.log("Sent = " + r.bytesSent);
-    }
-
-    function fail(error) {
-        alert("An error has occurred: Code = " + error.code);
-        console.log("upload error source " + error.source);
-        console.log("upload error target " + error.target);
-    }
-
     function postImageData(img){
 
         var myBase64EncodedData  = getBase64Image(img);
@@ -309,12 +281,15 @@
             },
             success: function(data){
 
-                $('.damagePercent').vale(data.damage_percentage);
+                var response = JSON.parse(data);
 
-                var processedImage = document.getElementById('new_image');
+                $('damagePercent').html(response.damage_percentage);
 
-                processedImage.src = "data:image/jpeg;base64," + data.result_image;
+                var processedImage = document.getElementById('processedImage');
 
+                processedImage.src = "data:image/jpeg;base64," + response.result_image;
+
+                $('#progressBar').hide();
             }
         });
     }
