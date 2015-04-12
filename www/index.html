@@ -55,7 +55,12 @@
               </div>
               <img id="processedImage" src="img/ionic.png" style="width: 90%; height:auto;" />
               <div id="imageInfo" class="row">
+
                   <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
+                  <h5><span style="color: darkred">Injury Class: </span><span class="injuryClass"></span></h5>
+                  <h5 id="injuryClassDescription"></h5>
+
+
                   <button id="submitLeafButton" class="btn waves-effect waves-light" onclick="showView('confirmation');" type="submit" name="action">Save</button>
                   <img id="hidden_image" src="img/ionic.png" style="position:absolute; visibility: hidden;" />
               </div>
@@ -82,6 +87,7 @@
         <div class="center-align">
             <img id="new_image" src="img/ionic.png" style="width: 90%; height:auto;" />
             <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
+            <h5>Injury class: </span><span class="damagePercent"></span></h5>
         </div>
 
         <div class="row">
@@ -310,9 +316,41 @@
 
                 var response = JSON.parse(data);
 
-                var damage = (100 * response.damage).toFixed(2);
+                var damage = (100 * parseFloat(response.damage_percentage)).toFixed(2);
 
-                $('.damagePercent').html(damage);
+                $('.damagePercent').html(damage + "%");
+
+                if(damage <= 0){
+
+                    $('.injuryClass').html('1');
+                    $('.injuryClassDescription').html('No ozone-induced injury');
+
+                }else if( damage > 0 && damage <= 6 ){
+
+                    $('.injuryClass').html('2');
+                    $('.injuryClassDescription').html('Light ozone-induced injury');
+
+                }else if(damage > 6 && damage <= 25){
+
+                    $('.injuryClass').html('3');
+                    $('.injuryClassDescription').html('Moderate ozone-induced injury');
+
+                }else if(damage > 25 && damage <= 50){
+
+                    $('.injuryClass').html('4');
+                    $('.injuryClassDescription').html('Moderately severe ozone-induced injury');
+
+                }else if(damage > 50 && damage <= 75){
+
+                    $('.injuryClass').html('5');
+                    $('.injuryClassDescription').html('Severe ozone-induced injury');
+
+                }else if(damage > 75 && damage <= 100){
+
+                    $('.injuryClass').html('6');
+                    $('.injuryClassDescription').html('Extremely severe ozone-induced injury');
+
+                }
 
                 var processedImage = document.getElementById('processedImage');
 
