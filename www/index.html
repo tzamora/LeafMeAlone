@@ -161,13 +161,13 @@
         script.id = "googleMaps"
         script.src = "https://maps.googleapis.com/maps/api/js?sensor=false&callback=initializeMap";
         document.body.appendChild(script);
-        alert('estoy harto');
     }
 
     function initializeMap(mapOptions) {
         var myLatlng = new google.maps.LatLng(currentLocation.coords.latitude, currentLocation.coords.longitude);
         var mapOptions = {
             center : myLatlng,
+            zoom : 18,
             mapTypeId : google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
