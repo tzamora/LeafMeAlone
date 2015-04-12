@@ -144,10 +144,10 @@
                     </div>
                     <div class="card-action">
                         <div class="row">
-                            Developer: Jose Mario<br>
-                            Developer: Rafa<br>
-                            Developer: Jeancarlo <br>
-                            Developer: Antonio Zamora<br>
+                            MSc. Jose Mario Carranza<br>
+                            MSc. Jeancarlo Arguello<br>
+                            Ing. Rafael Alfaro <br>
+                            Ing. Antonio Zamora<br>
                             <br>
                             Space App Challenge 2015. ITCR, Costa Rica.
                         </div>
@@ -210,9 +210,9 @@
 
             var image = document.getElementById('new_image');
 
-            var hiddenImage = document.getElementById('hidden_image');
-
             image.src = "data:image/jpeg;base64," + imageURI;
+
+            var hiddenImage = document.getElementById('hidden_image');
 
             hiddenImage.src = "data:image/jpeg;base64," + imageURI;
 
@@ -238,9 +238,9 @@
 
             var image = document.getElementById('new_image');
 
-            var hiddenImage = document.getElementById('hidden_image');
-
             image.src = "data:image/jpeg;base64," + imageURI;
+
+            var hiddenImage = document.getElementById('hidden_image');
 
             hiddenImage.src = "data:image/jpeg;base64," + imageURI;
 
@@ -387,7 +387,7 @@
 
                 var new_image = document.getElementById('new_image');
 
-                new_image.src = "data:image/jpeg;base64," + response;
+                new_image.src = "data:image/jpeg;base64," + response.result_image;
 
                 $('#progressBar').hide();
 
@@ -423,9 +423,14 @@
             var processedImage = document.getElementById('processedImage');
             var newImage = document.getElementById('new_image');
 
+
+            if(currentLocation)
+
+
+//            "latitude": currentLocation.coords.latitude,
+//             "longitude": currentLocation.coords.longitude,
+
             var data = {
-                "latitude": currentLocation.coords.latitude,
-                "longitude": currentLocation.coords.longitude,
                 "description": document.getElementById('description').value,
                 "injured": document.getElementById('damagePercent').value,
                 "processedImage": processedImage.src,
@@ -453,6 +458,11 @@
 
     function loadGallery () {
         $.each(db, function(i, obj) {
+
+
+            alert('esto se esta moviendo');
+
+
             var mainDiv = document.createElement("div");
             mainDiv.className = "card";
 
