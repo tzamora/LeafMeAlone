@@ -36,7 +36,8 @@
       <div class="nav-wrapper">
           <ul id="nav-mobile" class="left">
               <li><a data-launch-view="camera" href="#camera"><i class="mdi-image-photo-camera"></i></a></li>
-              <li><a data-launch-view="confirmation" href="#confirmation"><i class="mdi-editor-insert-chart"></i></a></li>
+              <li><a data-launch-view="confirmation" href="#confirmation"><i class="mdi-editor-insert-chart"></i></a></li>ç
+              <li><a onclick="loadGallery()" data-launch-view="gallery" href="#gallery"><i class="mdi-image-editor-camera"></i></a></li>
           </ul>
       </div>
   </nav>
@@ -90,8 +91,8 @@
 
     </div>
 
-    <div class="view" id="data" style="display:none">
-        <h1>Page 3</h1>
+    <div class="view" id="gallery">
+
     </div>
 
   </div>
@@ -112,12 +113,15 @@
 
   <script type="text/javascript">
 
-    var map, mapOptions, currentLocation, currentLocationMarker;
+    var map, mapOptions, currentLocation, currentLocationMarker, db;
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
+    var self = this;
 
     $(document).ready(function (e) {
+
+        self.loadInformation();
 
         function showView(viewName) {
             $('.view').hide();
@@ -133,8 +137,6 @@
         function showMapView(){
             showView('confirmation');
         }
-
-        onDeviceReady();
     });
 
     function getPicture(){
@@ -233,16 +235,60 @@
 
 
     function saveInformation() {
-      if(typeof(Storage) !== "undefined") {
+      if (typeof(Storage) !== "undefined") {
+        var data = { 
+          "latitude": currentLocation.coords.latitude, 
+          "longitude": currentLocation.coords.longitude, 
+          "description": document.getElementById('description').value,
+          "injured": document.getElementById('damagePercent').value
+        };
 
-        data = [ { 
-          latitude: currentLocation.coords.latitude, 
-          longituted: currentLocation.coords.longitude, 
-          description: document.getElementById('description')
-        } ];
+        db.push(data);
 
-        localStorage["leaf"] = data;
+        localStorage["leaf"] = JSON.stringify(db);
       }
+    }
+
+    function loadInformation() {
+      
+      if (typeof(Storage) !== "undefined") {
+
+        if (localStorage["leaf"] !== undefined) {
+          db = JSON.parse(localStorage["leaf"]);
+        }
+        else {
+          db = [];
+        }
+      }
+    }
+
+    function loadGallery () {
+      $.each(db, function(i, obj) {
+        var mainDiv = document.createElement("div");
+        mainDiv.className = "card";
+
+        var imageDiv = document.createElement("div");
+        imageDiv.className = "card-image waves-effect waves-block waves-light";
+        var image = document.createElement("img");
+        image.className = "activator";
+        //<image.src("images/office.jpg");
+        imageDiv.appendChild(image);
+
+        var contentDiv = document.createElement("div");
+        contentDiv.className = "card-content";
+        var contentSpan = document.createElement("span");
+        contentSpan.className = "card-title activator grey-text text-darken-4";
+        contentSpan.innerHTML = obj.injured;
+        var contentPar = document.createElement("p");
+        contentPar.innerHTML = obj.latitude + ', ' + obj.longitude;
+        contentDiv.appendChild(contentPar);
+        contentDiv.appendChild(contentSpan);
+
+        document.getElementById("gallery").appendChild(imageDiv);
+        document.getElementById("gallery").appendChild(contentDiv);
+
+      });
+
     }
 
   </script>
