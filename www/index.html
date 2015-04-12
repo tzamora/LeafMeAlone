@@ -54,24 +54,28 @@
                   <div class="indeterminate"></div>
               </div>
               <img id="processedImage" src="img/ionic.png" style="width: 90%; height:auto;" />
-              <div id="imageInfo" class="row">
+              <div class="row imageInfo" >
 
                   <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
+                  <h5><span style="color: darkred">Ozone Factor: </span><span class="ozoneFactor"></span></h5>
                   <h5><span style="color: darkred">Injury Class: </span><span class="injuryClass"></span></h5>
-                  <h5 id="injuryClassDescription"></h5>
+                  <h5 class="injuryClassDescription"></h5>
 
-
-                  <button id="submitLeafButton" class="btn waves-effect waves-light" onclick="showView('confirmation');" type="submit" name="action">Save</button>
                   <img id="hidden_image" src="img/ionic.png" style="position:absolute; visibility: hidden;" />
               </div>
           </div>
       </div>
 
       <footer class="fixed-footer">
+
+          <a class="btn-floating btn-large waves-effect waves-light green left margin small-left-margin imageInfo" href="#" onclick="showView('confirmation');">
+              <i class="mdi-content-save"></i>
+          </a>
+
           <a class="btn-floating btn-large waves-effect waves-light red right margin small-right-margin" href="#" onclick="takePicture()">
               <i class="mdi-image-photo-camera"></i>
           </a>
-          <a class="btn-floating btn-large waves-effect waves-light green right margin small-right-margin" href="#" onclick="getPicture()">
+          <a class="btn-floating btn-large waves-effect waves-light blue right margin small-right-margin" href="#" onclick="getPicture()">
               <i class="mdi-image-crop-original"></i>
           </a>
       </footer>
@@ -108,7 +112,7 @@
         </div>
 
         <div class="row">
-            <button class="btn waves-effect waves-light con s12" type="submit" name="action">Submit
+            <button class="btn waves-effect waves-light con s12 small-left-margin" type="submit" name="action" onclick="saveInformation()">Submit
                 <i class="mdi-content-send right"></i>
             </button>
         </div>
@@ -158,6 +162,7 @@
   <script type="text/javascript">
 
     var map, mapOptions, currentLocation, currentLocationMarker;
+    var db = [];
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -188,10 +193,10 @@
 
         if(toggle){
             $("#processedImage").show();
-            $("#imageInfo").show();
+            $(".imageInfo").show();
         }else{
             $("#processedImage").hide();
-            $("#imageInfo").hide();
+            $(".imageInfo").hide();
         }
 
 
@@ -314,12 +319,24 @@
 
         var myBase64EncodedData  = getBase64Image(img);
 
+        var dataToSend = {};
+
+        if(currentLocation && currentLocation.coords){
+            dataToSend = {
+                'image': myBase64EncodedData,
+                'latitude' : currentLocation.coords.latitude,
+                'longitude' : currentLocation.coords.longitude
+            };
+        }else{
+            dataToSend = {
+                'image': myBase64EncodedData
+            };
+        }
+
         $.ajax({
             type: 'POST',
             url: 'http://172.26.6.130:8080/',
-            data: {
-                'image': myBase64EncodedData
-            },
+            data: dataToSend,
             success: function(data){
 
                 var response = JSON.parse(data);
@@ -360,6 +377,10 @@
 
                 }
 
+                var ozoneFactor = response.ozone_factor;
+
+                $('.ozoneFactor').html(ozoneFactor);
+
                 var processedImage = document.getElementById('processedImage');
 
                 processedImage.src = "data:image/jpeg;base64," + response.result_image;
@@ -395,6 +416,9 @@
     }
 
     function saveInformation() {
+
+
+
         if (typeof(Storage) !== "undefined") {
             var data = {
                 "latitude": currentLocation.coords.latitude,
