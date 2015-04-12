@@ -44,7 +44,18 @@
   <div id="lotOfPages">
 
     <div class="view" id="camera">
-      <h5>Page 1</h5>
+      <div class="row">
+          <div class="center-align">
+              <h5>Load an image</h5>
+              <img id="processedImage" src="img/ionic.png" style="width: 200px; height:200px;" />
+              <div class="row">
+                  <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
+                  <button class="btn waves-effect waves-light" type="submit" name="action">Save</button>
+                  <img id="hidden_image" src="img/ionic.png" style="position:absolute; visibility: hidden;" />
+              </div>
+          </div>
+      </div>
+
       <footer class="fixed-footer">
           <a class="btn-floating btn-large waves-effect waves-light red right margin small-right-margin" href="#" onclick="takePicture()">
               <i class="mdi-image-photo-camera"></i>
@@ -63,8 +74,12 @@
             </div>
         </div>
         <div class="center-align">
-            <img id="result_image" src="img/ionic.png" style="width: 200px; height:200px;" />
+            <img id="new_image" src="img/ionic.png" style="width: 200px; height:200px;" />
+            <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
         </div>
+
+
+
         <div class="row">
             <div class="input-field col s12">
                 <input id="description" type="text" >
@@ -77,8 +92,8 @@
             <div id="map_canvas" data-tap-disabled="true" class="map">
             </div>
             <div class="input-field col s12">
-                <input id="coord" type="text" >
-                <label for="coord">Coordenadas</label>
+                <input id="coord" type="text" class="validate">
+                <label class="active" for="coord">Coordenadas</label>
             </div>
         </div>
 
@@ -96,18 +111,21 @@
 
   </div>
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
-      <div class="modal-content">
-          <h4>Leaf Preview</h4>
-          <p>Damage: <span id="damagePercent">0%</span></p>
-          <img id="analizedPhoto" src="img/ionic.png" />
-      </div>
-      <div class="modal-footer">
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
-      </div>
-  </div>
+  <!--&lt;!&ndash; Modal Structure &ndash;&gt;-->
+  <!--<div id="modal1" class="modal">-->
+      <!--<div class="modal-content">-->
+          <!--<h4>Leaf Preview</h4>-->
+
+          <!--<div class="center-align">-->
+            <!--<img id="analizedPhoto" src="img/ionic.png" style="width: 98%" />-->
+              <!--<p>Damage: <span id="damagePercent">0%</span></p>-->
+          <!--</div>-->
+      <!--</div>-->
+      <!--<div class="modal-footer">-->
+          <!--<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>-->
+          <!--<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>-->
+      <!--</div>-->
+  <!--</div>-->
 
 
   <script type="text/javascript">
@@ -133,15 +151,25 @@
         function showMapView(){
             showView('confirmation');
         }
+        onDeviceReady();
+
     });
 
     function getPicture(){
-        navigator.camera.getPicture(function(imageURI) {
 
-            var image = document.getElementById('result_image');
+        var img = document.getElementById('new_image');
+
+        navigator.camera.getPicture(function(imageURI){
+
+            var image = document.getElementById('new_image');
+
+            var hiddenImage = document.getElementById('hidden_image');
+
             image.src = "data:image/jpeg;base64," + imageURI;
 
-            $('#modal1').openModal();
+            hiddenImage.src = "data:image/jpeg;base64," + imageURI;
+
+            postImageData(hiddenImage);
 
         }, function(err) {
 
@@ -159,8 +187,15 @@
 
         navigator.camera.getPicture(function(imageURI) {
 
-            var image = document.getElementById('result_image');
+            var image = document.getElementById('new_image');
+
+            var hiddenImage = document.getElementById('hidden_image');
+
             image.src = "data:image/jpeg;base64," + imageURI;
+
+            hiddenImage.src = "data:image/jpeg;base64," + imageURI;
+
+            postImageData(hiddenImage);
 
             $('#modal1').openModal();
 
@@ -185,12 +220,14 @@
     }
 
     function initializeMap(mapOptions) {
+
         var myLatlng = new google.maps.LatLng(currentLocation.coords.latitude, currentLocation.coords.longitude);
         var mapOptions = {
             center : myLatlng,
             zoom : 18,
             mapTypeId : google.maps.MapTypeId.ROADMAP
         };
+
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
         updateCurrentLocationMarker();
@@ -227,6 +264,78 @@
 
     function onDeviceReady() {
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+
+    function uploadPhoto(imageURI) {
+
+        alert('---> ' + imageURI);
+
+        var options = new FileUploadOptions();
+        options.fileKey="file";
+        options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1)+'.png';
+        options.mimeType="text/plain";
+
+        var params = new Object();
+
+        options.params = params;
+
+        var ft = new FileTransfer();
+
+        ft.upload(imageURI, encodeURI("http://172.26.7.216:8080/"), win, fail, options);
+    }
+
+    function win(r) {
+        alert('lo logramos');
+        console.log("Code = " + r.responseCode);
+        console.log("Response = " + r.response);
+        console.log("Sent = " + r.bytesSent);
+    }
+
+    function fail(error) {
+        alert("An error has occurred: Code = " + error.code);
+        console.log("upload error source " + error.source);
+        console.log("upload error target " + error.target);
+    }
+
+    function postImageData(img){
+
+        var myBase64EncodedData  = getBase64Image(img);
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://172.26.7.216:8080/',
+            data: {
+                'image': myBase64EncodedData
+            },
+            success: function(data){
+
+                $('.damagePercent').vale(data.damage_percentage);
+
+                var processedImage = document.getElementById('new_image');
+
+                processedImage.src = "data:image/jpeg;base64," + data.result_image;
+
+            }
+        });
+    }
+
+    function getBase64Image(img) {
+        // Create an empty canvas element
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Copy the image contents to the canvas
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        // Get the data-URL formatted image
+        // Firefox supports PNG and JPEG. You could check img.src to
+        // guess the original format, but be aware the using "image/jpg"
+        // will re-encode the image.
+        var dataURL = canvas.toDataURL("image/png");
+
+        return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
     }
 
   </script>
