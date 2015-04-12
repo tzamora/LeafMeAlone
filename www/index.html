@@ -97,7 +97,7 @@
             </div>
             <div class="input-field col s12">
                 <input id="coord" type="text" class="validate">
-                <label id="coordLabel" class="active" for="coord">Coordenadas</label>
+                <label id="coordLabel" class="active" for="coord">Coordinates</label>
             </div>
         </div>
 
@@ -310,7 +310,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'http://172.26.7.216:8080/',
+            url: 'http://172.26.6.130:8080/',
             data: {
                 'image': myBase64EncodedData
             },
@@ -318,7 +318,9 @@
 
                 var response = JSON.parse(data);
 
-                $('.damagePercent').html(response.damage_percentage);
+                var damage = (100 * response.damage).toFixed(2);
+
+                $('.damagePercent').html(damage);
 
                 var processedImage = document.getElementById('processedImage');
 
@@ -353,6 +355,65 @@
 
         return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
     }
+
+    function saveInformation() {
+        if (typeof(Storage) !== "undefined") {
+            var data = {
+                "latitude": currentLocation.coords.latitude,
+                "longitude": currentLocation.coords.longitude,
+                "description": document.getElementById('description').value,
+                "injured": document.getElementById('damagePercent').value
+            };
+
+            db.push(data);
+
+            localStorage["leaf"] = JSON.stringify(db);
+        }
+    }
+
+    function loadInformation() {
+
+        if (typeof(Storage) !== "undefined") {
+
+            if (localStorage["leaf"] !== undefined) {
+                db = JSON.parse(localStorage["leaf"]);
+            }
+            else {
+                db = [];
+            }
+        }
+    }
+
+    function loadGallery () {
+        $.each(db, function(i, obj) {
+            var mainDiv = document.createElement("div");
+            mainDiv.className = "card";
+
+            var imageDiv = document.createElement("div");
+            imageDiv.className = "card-image waves-effect waves-block waves-light";
+            var image = document.createElement("img");
+            image.className = "activator";
+            //<image.src("images/office.jpg");
+            imageDiv.appendChild(image);
+
+            var contentDiv = document.createElement("div");
+            contentDiv.className = "card-content";
+            var contentSpan = document.createElement("span");
+            contentSpan.className = "card-title activator grey-text text-darken-4";
+            contentSpan.innerHTML = obj.injured;
+            var contentPar = document.createElement("p");
+            contentPar.innerHTML = obj.latitude + ', ' + obj.longitude;
+            contentDiv.appendChild(contentPar);
+            contentDiv.appendChild(contentSpan);
+
+            document.getElementById("gallery").appendChild(imageDiv);
+            document.getElementById("gallery").appendChild(contentDiv);
+
+        });
+
+    }
+
+
 
   </script>
   <!--Import jQuery before materialize.js-->
