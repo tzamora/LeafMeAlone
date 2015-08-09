@@ -91,7 +91,7 @@
         <div class="center-align">
             <img id="new_image" src="img/ionic.png" style="width: 90%; height:auto;" />
             <h5><span style="color: darkred">Damage: </span><span class="damagePercent"></span></h5>
-            <h5>Injury class: </span><span class="damagePercent"></span></h5>
+            <h5>Injury class: </span><span class="injuryClass"></span></h5>
         </div>
 
         <div class="row">
@@ -162,6 +162,7 @@
   <script type="text/javascript">
 
     var map, mapOptions, currentLocation, currentLocationMarker;
+
     var db = [];
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -319,7 +320,48 @@
 
         var myBase64EncodedData  = getBase64Image(img);
 
+
+        // ==>       <==
+        // The big DATA
+        // the mama!
+        // ==>       <==
         var dataToSend = {};
+
+
+        var
+
+
+        var students = [
+                id,
+                name,
+                courses : [
+                    id,
+                    name
+                    subjects : [
+                        id,
+                        name
+                    ],
+                    profesors : [
+                        id,
+                        name
+                    ]
+                ]
+        ];
+
+
+
+
+
+        var query = {
+            'image',
+            latitude,
+            longitude
+            events :
+        };
+
+        var query = {
+
+        }
 
         if(currentLocation && currentLocation.coords){
             dataToSend = {
@@ -424,7 +466,7 @@
             var newImage = document.getElementById('new_image');
 
 
-            if(currentLocation)
+            //if(currentLocation)
 
 
 //            "latitude": currentLocation.coords.latitude,
@@ -432,7 +474,7 @@
 
             var data = {
                 "description": document.getElementById('description').value,
-                "injured": document.getElementById('damagePercent').value,
+                "injured": document.getElementsByClassName('damagePercent').value,
                 "processedImage": processedImage.src,
                 "newImage": newImage.src
             };
@@ -457,34 +499,75 @@
     }
 
     function loadGallery () {
+
+        console.log('esto es lo que viene %o', db);
+
         $.each(db, function(i, obj) {
 
 
-            alert('esto se esta moviendo');
+
+//            var mainDiv = document.createElement("div");
+//
+//            mainDiv.className = "card";
+//
+//            var imageDiv = document.createElement("div");
+//
+//            imageDiv.className = "card-image waves-effect waves-block waves-light";
+//
+//            var image = document.createElement("img");
+//
+//            image.className = "activator";
+//
+//            image.src = obj.processedImage;
+//
+//            imageDiv.appendChild(image);
+//
+//            var contentDiv = document.createElement("div");
+//
+//            contentDiv.className = "card-content";
+//
+//            var contentSpan = document.createElement("span");
+//
+//            contentSpan.className = "card-title activator grey-text text-darken-4";
+//
+//            contentSpan.innerHTML = obj.injured;
+//
+//            var contentPar = document.createElement("p");
+//
+//            contentPar.innerHTML = obj.latitude + ', ' + obj.longitude;
+//
+//            contentDiv.appendChild(contentPar);
+//
+//            contentDiv.appendChild(contentSpan);
+//
+//            document.getElementById("gallery").appendChild(imageDiv);
+//
 
 
-            var mainDiv = document.createElement("div");
-            mainDiv.className = "card";
+            document.getElementById("gallery").append(
 
-            var imageDiv = document.createElement("div");
-            imageDiv.className = "card-image waves-effect waves-block waves-light";
-            var image = document.createElement("img");
-            image.className = "activator";
-            image.src(obj.processedImage);
-            imageDiv.appendChild(image);
+                    "<div class='row'>" +
+                    "<div class='col s12 m7'>" +
+                    "<div class='card'>" +
+                    "<div class='card-image'>" +
+                    "<img src='images/sample-1.jpg'>" +
+                    "<span class='card-title'>Card Title</span>" +
+                    "</div>" +
+                    "<div class='card-content'>" +
+                    "<p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>" +
+                    "</div>" +
+                    "<div class='card-action'>" +
+                    "<a href='#'>This is a link</a>" +
+                    "<a href='#'>This is a link</a>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
 
-            var contentDiv = document.createElement("div");
-            contentDiv.className = "card-content";
-            var contentSpan = document.createElement("span");
-            contentSpan.className = "card-title activator grey-text text-darken-4";
-            contentSpan.innerHTML = obj.injured;
-            var contentPar = document.createElement("p");
-            contentPar.innerHTML = obj.latitude + ', ' + obj.longitude;
-            contentDiv.appendChild(contentPar);
-            contentDiv.appendChild(contentSpan);
+            );
 
-            document.getElementById("gallery").appendChild(imageDiv);
-            document.getElementById("gallery").appendChild(contentDiv);
+
+
         });
 
     }
